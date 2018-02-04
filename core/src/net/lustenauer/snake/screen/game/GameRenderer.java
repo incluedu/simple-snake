@@ -1,11 +1,14 @@
 package net.lustenauer.snake.screen.game;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import net.lustenauer.snake.config.GameConfig;
+import net.lustenauer.snake.entity.SnakeHead;
 import net.lustenauer.snake.util.GdxUtils;
 import net.lustenauer.snake.util.ViewportUtils;
 import net.lustenauer.snake.util.debug.DebugCameraController;
@@ -55,16 +58,6 @@ public class GameRenderer implements Disposable {
         debugCameraController.applyTo(camera);
         GdxUtils.clearScreen();
 
-        //test code
-        viewport.apply();
-        renderer.setProjectionMatrix(camera.combined);
-
-        renderer.begin(ShapeRenderer.ShapeType.Line);
-
-        renderer.circle(GameConfig.WORLD_CENTER_X, GameConfig.WORLD_CENTER_Y, 4, 30);
-
-        renderer.end();
-
         renderDebug();
     }
 
@@ -83,7 +76,26 @@ public class GameRenderer implements Disposable {
     /*
      * PRIVATE METHODES
      */
-    private void renderDebug(){
-        ViewportUtils.drawGrid(viewport,renderer);
+    private void renderDebug() {
+        ViewportUtils.drawGrid(viewport, renderer);
+
+        viewport.apply();
+        Color oldColor = renderer.getColor().cpy();
+        renderer.setProjectionMatrix(camera.combined);
+        renderer.begin(ShapeRenderer.ShapeType.Line);
+
+        drawdebug();
+
+        renderer.end();
+        renderer.setColor(oldColor);
+    }
+
+    private void drawdebug() {
+        renderer.setColor(Color.GREEN);
+
+        SnakeHead snakeHead = controller.getSnakeHead();
+        Rectangle headBounds = snakeHead.getBounds();
+
+        renderer.rect(headBounds.x, headBounds.y, headBounds.width, headBounds.height);
     }
 }
