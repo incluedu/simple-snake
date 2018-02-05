@@ -52,6 +52,16 @@ public abstract class EntityBase {
         return y;
     }
 
+    public void setX(float x) {
+        this.x = x;
+        updateBounds();
+    }
+
+    public void setY(float y) {
+        this.y = y;
+        updateBounds();
+    }
+
     public float getWidth() {
         return width;
     }
@@ -67,7 +77,7 @@ public abstract class EntityBase {
     /*
      * PRIVATE METHODES
      */
-    private void updateBounds() {
+    protected void updateBounds() {
         bounds.setPosition(x, y);
         bounds.setSize(width, height);
     }
