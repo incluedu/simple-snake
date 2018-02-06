@@ -10,11 +10,6 @@ import net.lustenauer.snake.config.GameConfig;
 public class SnakeHead extends EntityBase {
 
     /*
-     * ATTRIBUTES
-     */
-    private Direction direction = Direction.RIGHT;
-
-    /*
      * CONSTRUCTORS
      */
     public SnakeHead() {
@@ -24,18 +19,6 @@ public class SnakeHead extends EntityBase {
     /*
      * PUBLIC METHODES
      */
-    public void move() {
-        if (direction.isRight()) {
-            updateX(GameConfig.SNAKE_SPEED);
-        } else if (direction.isLeft()) {
-            updateX(-GameConfig.SNAKE_SPEED);
-        } else if (direction.isUp()) {
-            updateY(GameConfig.SNAKE_SPEED);
-        } else if (direction.isDown()) {
-            updateY(-GameConfig.SNAKE_SPEED);
-        }
-    }
-
     public void updateX(float amount) {
         x += amount;
         updateBounds();
@@ -44,10 +27,6 @@ public class SnakeHead extends EntityBase {
     public void updateY(float amount) {
         y += amount;
         updateBounds();
-    }
-
-    public void setDirection(Direction direction) {
-        this.direction = direction;
     }
 
 }

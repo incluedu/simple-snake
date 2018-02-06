@@ -4,11 +4,14 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import net.lustenauer.snake.config.GameConfig;
+import net.lustenauer.snake.entity.BodyPart;
 import net.lustenauer.snake.entity.Coin;
+import net.lustenauer.snake.entity.Snake;
 import net.lustenauer.snake.entity.SnakeHead;
 import net.lustenauer.snake.util.GdxUtils;
 import net.lustenauer.snake.util.ViewportUtils;
@@ -93,9 +96,15 @@ public class GameRenderer implements Disposable {
 
     private void drawDebug() {
         renderer.setColor(Color.GREEN);
-        SnakeHead snakeHead = controller.getSnakeHead();
+        Snake snake = controller.getSnake();
+        SnakeHead snakeHead = snake.getHead();
         Rectangle headBounds = snakeHead.getBounds();
         renderer.rect(headBounds.x, headBounds.y, headBounds.width, headBounds.height);
+
+        for (BodyPart bodyPart : snake.getBodyParts()) {
+            Rectangle bodyPartBounds = bodyPart.getBounds();
+            renderer.rect(bodyPartBounds.x, bodyPartBounds.y, bodyPartBounds.width, bodyPartBounds.height);
+        }
 
         renderer.setColor(Color.BLUE);
         Coin coin = controller.getCoin();

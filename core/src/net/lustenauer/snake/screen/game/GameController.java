@@ -2,11 +2,14 @@ package net.lustenauer.snake.screen.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Logger;
 import net.lustenauer.snake.config.GameConfig;
 import net.lustenauer.snake.entity.Coin;
 import net.lustenauer.snake.entity.Direction;
+import net.lustenauer.snake.entity.Snake;
 import net.lustenauer.snake.entity.SnakeHead;
 
 /**
@@ -24,7 +27,7 @@ public class GameController {
     /*
      * ATTRIBUTES
      */
-    private SnakeHead snakeHead;
+    private Snake snake;
     private float timer;
 
     private Coin coin;
@@ -34,7 +37,7 @@ public class GameController {
      */
 
     public GameController() {
-        snakeHead = new SnakeHead();
+        snake = new Snake();
         coin = new Coin();
     }
 
@@ -43,21 +46,22 @@ public class GameController {
      */
     public void update(float delta) {
         queryInput();
+        queryDebugInput();
 
         timer += delta;
         if (timer >= GameConfig.MOVE_TIME) {
             timer = 0;
-            snakeHead.move();
+            snake.move();
 
             checkOutOfBounds();
+            checkCollision();
         }
 
         spawnCoin();
     }
 
-
-    public SnakeHead getSnakeHead() {
-        return snakeHead;
+    public Snake getSnake() {
+        return snake;
     }
 
     public Coin getCoin() {
@@ -74,39 +78,62 @@ public class GameController {
         boolean downPressed = Gdx.input.isKeyPressed(Input.Keys.DOWN);
 
         if (leftPressed) {
-            snakeHead.setDirection(Direction.LEFT);
+            snake.setDirection(Direction.LEFT);
         } else if (rightPressed) {
-            snakeHead.setDirection(Direction.RIGHT);
+            snake.setDirection(Direction.RIGHT);
         } else if (upPressed) {
-            snakeHead.setDirection(Direction.UP);
+            snake.setDirection(Direction.UP);
         } else if (downPressed) {
-            getSnakeHead().setDirection(Direction.DOWN);
+            getSnake().setDirection(Direction.DOWN);
+        }
+    }
+
+    private void queryDebugInput(){
+        if (Gdx.input.isKeyJustPressed(Input.Keys.PLUS)){
+            snake.insertBodyPart();
         }
     }
 
     private void checkOutOfBounds() {
+        SnakeHead head = snake.getHead();
+
         // check x bounds (left, right)
-        if (snakeHead.getX() > GameConfig.WORLD_WIDTH) {
-            snakeHead.setX(0);
-        } else if (snakeHead.getX() < 0) {
-            snakeHead.setX(GameConfig.WORLD_WIDTH - GameConfig.SNAKE_SPEED);
+        if (head.getX() >= GameConfig.WORLD_WIDTH) {
+            head.setX(0);
+        } else if (head.getX() < 0) {
+            head.setX(GameConfig.WORLD_WIDTH - GameConfig.SNAKE_SPEED);
         }
 
         // check y bounds ()up, down)
-        if (snakeHead.getY() >= GameConfig.WORLD_HEIGHT) {
-            snakeHead.setY(0);
-        } else if (snakeHead.getY() < 0) {
-            snakeHead.setY(GameConfig.WORLD_HEIGHT - GameConfig.SNAKE_SPEED);
+        if (head.getY() >= GameConfig.WORLD_HEIGHT) {
+            head.setY(0);
+        } else if (head.getY() < 0) {
+            head.setY(GameConfig.WORLD_HEIGHT - GameConfig.SNAKE_SPEED);
         }
     }
 
     private void spawnCoin() {
         if (!coin.isAvailable()) {
-            float coinX = MathUtils.random((int) GameConfig.WORLD_WIDTH - GameConfig.COIN_SIZE);
-            float coinY = MathUtils.random((int) GameConfig.WORLD_HEIGHT - GameConfig.COIN_SIZE);
+            float coinX = (int) MathUtils.random(GameConfig.WORLD_WIDTH - GameConfig.COIN_SIZE);
+            float coinY = (int) MathUtils.random(GameConfig.WORLD_HEIGHT - GameConfig.COIN_SIZE);
             coin.setAvailable(true);
             coin.setPosition(coinX, coinY);
         }
     }
+
+    private void checkCollision() {
+        // head <--> coin collision
+        SnakeHead head = snake.getHead();
+        Rectangle headBounds = head.getBounds();
+        Rectangle coinBounds = coin.getBounds();
+
+        boolean overlaps = Intersector.overlaps(headBounds, coinBounds);
+
+        if (coin.isAvailable() && overlaps) {
+            snake.insertBodyPart();
+            coin.setAvailable(false);
+        }
+    }
+
 
 }
