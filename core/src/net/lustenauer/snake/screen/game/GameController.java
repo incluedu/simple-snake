@@ -2,8 +2,10 @@ package net.lustenauer.snake.screen.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Logger;
 import net.lustenauer.snake.config.GameConfig;
+import net.lustenauer.snake.entity.Coin;
 import net.lustenauer.snake.entity.Direction;
 import net.lustenauer.snake.entity.SnakeHead;
 
@@ -25,12 +27,15 @@ public class GameController {
     private SnakeHead snakeHead;
     private float timer;
 
+    private Coin coin;
+
     /*
      * CONSTRUCTORS
      */
 
     public GameController() {
         snakeHead = new SnakeHead();
+        coin = new Coin();
     }
 
     /*
@@ -46,11 +51,17 @@ public class GameController {
 
             checkOutOfBounds();
         }
+
+        spawnCoin();
     }
 
 
     public SnakeHead getSnakeHead() {
         return snakeHead;
+    }
+
+    public Coin getCoin() {
+        return coin;
     }
 
     /*
@@ -86,6 +97,15 @@ public class GameController {
             snakeHead.setY(0);
         } else if (snakeHead.getY() < 0) {
             snakeHead.setY(GameConfig.WORLD_HEIGHT - GameConfig.SNAKE_SPEED);
+        }
+    }
+
+    private void spawnCoin() {
+        if (!coin.isAvailable()) {
+            float coinX = MathUtils.random((int) GameConfig.WORLD_WIDTH - GameConfig.COIN_SIZE);
+            float coinY = MathUtils.random((int) GameConfig.WORLD_HEIGHT - GameConfig.COIN_SIZE);
+            coin.setAvailable(true);
+            coin.setPosition(coinX, coinY);
         }
     }
 

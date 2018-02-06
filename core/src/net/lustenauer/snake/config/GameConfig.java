@@ -23,6 +23,9 @@ public class GameConfig {
     public static final float MOVE_TIME = 0.2f;
     public static final float SNAKE_SPEED = 1f;
 
+    public static final float COIN_SIZE = 1;
+
+
 
 
     private GameConfig() {

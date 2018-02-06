@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import net.lustenauer.snake.config.GameConfig;
+import net.lustenauer.snake.entity.Coin;
 import net.lustenauer.snake.entity.SnakeHead;
 import net.lustenauer.snake.util.GdxUtils;
 import net.lustenauer.snake.util.ViewportUtils;
@@ -84,18 +85,21 @@ public class GameRenderer implements Disposable {
         renderer.setProjectionMatrix(camera.combined);
         renderer.begin(ShapeRenderer.ShapeType.Line);
 
-        drawdebug();
+        drawDebug();
 
         renderer.end();
         renderer.setColor(oldColor);
     }
 
-    private void drawdebug() {
+    private void drawDebug() {
         renderer.setColor(Color.GREEN);
-
         SnakeHead snakeHead = controller.getSnakeHead();
         Rectangle headBounds = snakeHead.getBounds();
-
         renderer.rect(headBounds.x, headBounds.y, headBounds.width, headBounds.height);
+
+        renderer.setColor(Color.BLUE);
+        Coin coin = controller.getCoin();
+        Rectangle coinBounds = coin.getBounds();
+        renderer.rect(coinBounds.x, coinBounds.y, coinBounds.width, coinBounds.height);
     }
 }
