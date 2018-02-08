@@ -7,10 +7,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Logger;
 import net.lustenauer.snake.config.GameConfig;
-import net.lustenauer.snake.entity.Coin;
-import net.lustenauer.snake.entity.Direction;
-import net.lustenauer.snake.entity.Snake;
-import net.lustenauer.snake.entity.SnakeHead;
+import net.lustenauer.snake.entity.*;
 
 /**
  * Created by Patric Hollenstein on 03.02.18.
@@ -88,8 +85,8 @@ public class GameController {
         }
     }
 
-    private void queryDebugInput(){
-        if (Gdx.input.isKeyJustPressed(Input.Keys.PLUS)){
+    private void queryDebugInput() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.PLUS)) {
             snake.insertBodyPart();
         }
     }
@@ -133,6 +130,21 @@ public class GameController {
             snake.insertBodyPart();
             coin.setAvailable(false);
         }
+
+        // head <--> body parts collision
+        for (BodyPart bodyPart : snake.getBodyParts()) {
+            if (bodyPart.isJustAdded()) {
+                bodyPart.setJustAdded(false);
+                continue;
+            }
+
+            Rectangle bodyPartBounds = bodyPart.getBounds();
+            if (Intersector.overlaps(headBounds, bodyPartBounds)) {
+                log.debug("collision with bodyPart");
+            }
+
+        }
+
     }
 
 
