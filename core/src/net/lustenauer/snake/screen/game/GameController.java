@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Logger;
+import net.lustenauer.snake.common.GameManager;
 import net.lustenauer.snake.config.GameConfig;
 import net.lustenauer.snake.entity.*;
 
@@ -42,19 +43,23 @@ public class GameController {
      * PUBLIC METHODES
      */
     public void update(float delta) {
-        queryInput();
-        queryDebugInput();
+        if (GameManager.INSTANCE.isPlaying()) {
+            queryInput();
+            queryDebugInput();
 
-        timer += delta;
-        if (timer >= GameConfig.MOVE_TIME) {
-            timer = 0;
-            snake.move();
+            timer += delta;
+            if (timer >= GameConfig.MOVE_TIME) {
+                timer = 0;
+                snake.move();
 
-            checkOutOfBounds();
-            checkCollision();
+                checkOutOfBounds();
+                checkCollision();
+            }
+
+            spawnCoin();
+        } else {
+            checkForRestart();
         }
-
-        spawnCoin();
     }
 
     public Snake getSnake() {
@@ -141,10 +146,24 @@ public class GameController {
             Rectangle bodyPartBounds = bodyPart.getBounds();
             if (Intersector.overlaps(headBounds, bodyPartBounds)) {
                 log.debug("collision with bodyPart");
+                GameManager.INSTANCE.setGameOver();
             }
 
         }
 
+    }
+
+    private void checkForRestart(){
+      if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
+          restart();
+      }
+    }
+
+    private void restart() {
+        GameManager.INSTANCE.setPlaying();
+        snake.reset();
+        coin.setAvailable(false);
+        timer = 0;
     }
 
 

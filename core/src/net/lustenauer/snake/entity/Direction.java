@@ -27,4 +27,20 @@ public enum Direction {
         return this == LEFT;
     }
 
+    public Direction getOpposit() {
+        if (isLeft()) {
+            return RIGHT;
+        } else if (isRight()) {
+            return LEFT;
+        } else if (isUp()) {
+            return DOWN;
+        } else if (isDown()) {
+            return UP;
+        }
+        throw new IllegalArgumentException("Cant find opposite of direction" + this);
+    }
+
+    public boolean isOposit(Direction direction){
+        return getOpposit() == direction;
+    }
 }
