@@ -10,6 +10,8 @@ public class GameConfig {
     /*
      * CONSTANTS
      */
+    private static final float Y_OFFSET = 2;
+
     public static final float WIDTH = 800f; // piyles
     public static final float HEIGHT = 480; // pixles
 
@@ -28,9 +30,9 @@ public class GameConfig {
     public static final float SNAKE_SPEED = 1f;
 
     public static final float COIN_SIZE = 1;
+    public static final int COIN_SCORE = 20;
 
-
-
+    public static final float MAX_Y = WORLD_HEIGHT - Y_OFFSET;
 
     private GameConfig() {
     }
