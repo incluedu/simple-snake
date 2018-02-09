@@ -1,12 +1,18 @@
 package net.lustenauer.snake.screen.game;
 
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import net.lustenauer.snake.assets.AssetDescriptors;
+import net.lustenauer.snake.common.GameManager;
 import net.lustenauer.snake.config.GameConfig;
 import net.lustenauer.snake.entity.BodyPart;
 import net.lustenauer.snake.entity.Coin;
@@ -22,15 +28,25 @@ import net.lustenauer.snake.util.debug.DebugCameraController;
  * @author Patric Hollenstein
  */
 public class GameRenderer implements Disposable {
+    /*
+     * CONSTANTS
+     */
+    private static final float PADDING = 20.0f;
 
     /*
      * ATTRIBUTES
      */
     private final GameController controller;
+    private final SpriteBatch batch;
+    private final AssetManager assetManager;
 
     private OrthographicCamera camera;
     private Viewport viewport;
+    private Viewport hudViewport;
     private ShapeRenderer renderer;
+
+    private BitmapFont font;
+    private final GlyphLayout layout = new GlyphLayout();
 
     private DebugCameraController debugCameraController;
 
@@ -39,7 +55,9 @@ public class GameRenderer implements Disposable {
      * CONSTRUCTORS
      */
 
-    public GameRenderer(GameController controller) {
+    public GameRenderer(SpriteBatch batch, AssetManager assetManager, GameController controller) {
+        this.batch = batch;
+        this.assetManager = assetManager;
         this.controller = controller;
         init();
     }
@@ -47,7 +65,10 @@ public class GameRenderer implements Disposable {
     private void init() {
         camera = new OrthographicCamera();
         viewport = new FitViewport(GameConfig.WORLD_WIDTH, GameConfig.WORLD_HEIGHT, camera);
+        hudViewport = new FitViewport(GameConfig.HUD_WIDTH, GameConfig.HUD_HIGHT);
         renderer = new ShapeRenderer();
+
+        font = assetManager.get(AssetDescriptors.UI_FONT);
 
         debugCameraController = new DebugCameraController();
         debugCameraController.setStartPosition(GameConfig.WORLD_CENTER_X, GameConfig.WORLD_CENTER_Y);
@@ -61,12 +82,15 @@ public class GameRenderer implements Disposable {
         debugCameraController.applyTo(camera);
         GdxUtils.clearScreen();
 
+        renderHud();
         renderDebug();
     }
 
     public void resize(int width, int height) {
         viewport.update(width, height, true);
+        hudViewport.update(width, height, true);
         ViewportUtils.debugPixelsPerUnit(viewport);
+        ViewportUtils.debugPixelsPerUnit(hudViewport);
     }
 
 
@@ -111,10 +135,34 @@ public class GameRenderer implements Disposable {
 
         // coin
         Coin coin = controller.getCoin();
-        if (coin.isAvailable()){
+        if (coin.isAvailable()) {
             renderer.setColor(Color.BLUE);
             Rectangle coinBounds = coin.getBounds();
             renderer.rect(coinBounds.x, coinBounds.y, coinBounds.width, coinBounds.height);
         }
+    }
+
+    private void renderHud() {
+        hudViewport.apply();
+        batch.setProjectionMatrix(hudViewport.getCamera().combined);
+        batch.begin();
+
+        drawHud();
+
+        batch.end();
+    }
+
+    private void drawHud() {
+        String highScoreString = "HIGH SCORE: " + GameManager.INSTANCE.getDisplayHighScore();
+        layout.setText(font, highScoreString);
+        font.draw(batch, layout, PADDING, hudViewport.getWorldHeight() - PADDING);
+
+        float scoreX = hudViewport.getWorldWidth() - layout.width;
+        float scoreY = hudViewport.getWorldHeight() - PADDING;
+
+        String scoreString = "SCORE: " + GameManager.INSTANCE.getDisplayScore();
+        layout.setText(font, scoreString);
+        font.draw(batch, layout, scoreX, scoreY);
+
     }
 }
