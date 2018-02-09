@@ -6,7 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Logger;
-import net.lustenauer.snake.screen.game.GameScreen;
+import net.lustenauer.snake.screen.loading.LoadingScreen;
 
 public class SimpleSnakeGame extends Game {
 
@@ -25,7 +25,7 @@ public class SimpleSnakeGame extends Game {
 
         batch = new SpriteBatch();
 
-        setScreen(new GameScreen(this));
+        setScreen(new LoadingScreen(this));
     }
 
     @Override
