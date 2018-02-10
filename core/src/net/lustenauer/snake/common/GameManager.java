@@ -1,5 +1,9 @@
 package net.lustenauer.snake.common;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
+import net.lustenauer.snake.SimpleSnakeGame;
+
 /**
  * Created by Patric Hollenstein on 08.02.18.
  *
@@ -11,6 +15,7 @@ public class GameManager {
      * CONSTANTS
      */
     public static final GameManager INSTANCE = new GameManager();
+    private static final String HIGH_SCORE_KEY = "highScore";
 
     /*
      * ATTRIBUTES
@@ -21,10 +26,14 @@ public class GameManager {
     private int displayScore;
     private int displayHighScore;
 
+    private Preferences prefs;
+
     /*
      * CONSTRUCTORS
      */
     private GameManager() {
+        prefs = Gdx.app.getPreferences(SimpleSnakeGame.class.getSimpleName());
+        highScore = prefs.getInteger(HIGH_SCORE_KEY,0);
     }
 
     /*
@@ -80,5 +89,15 @@ public class GameManager {
         if (displayHighScore < highScore) {
             displayHighScore = Math.min(highScore, displayHighScore + (int) (100 * delta));
         }
+    }
+
+    public void updateHighScore(){
+        if (score < highScore){
+            return;
+        }
+
+        highScore = score;
+        prefs.putInteger(HIGH_SCORE_KEY,highScore);
+        prefs.flush();
     }
 }

@@ -148,7 +148,7 @@ public class GameController {
 
             Rectangle bodyPartBounds = bodyPart.getBounds();
             if (Intersector.overlaps(headBounds, bodyPartBounds)) {
-                log.debug("collision with bodyPart");
+                GameManager.INSTANCE.updateHighScore();
                 GameManager.INSTANCE.setGameOver();
             }
 
