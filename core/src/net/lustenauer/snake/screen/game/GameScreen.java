@@ -36,7 +36,7 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void show() {
         controller = new GameController();
-        renderer = new GameRenderer(game.getBatch(), game.getAssetManager(), controller);
+        renderer = new GameRenderer(game.getBatch(), assetManager, controller);
     }
 
     @Override
