@@ -37,6 +37,8 @@ public class GameController {
     public GameController() {
         snake = new Snake();
         coin = new Coin();
+
+        restart();
     }
 
     /*

@@ -3,6 +3,8 @@ package net.lustenauer.snake.screen.game;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
 import net.lustenauer.snake.SimpleSnakeGame;
+import net.lustenauer.snake.common.GameManager;
+import net.lustenauer.snake.screen.menu.MenuScreen;
 
 /**
  * Created by Patric Hollenstein on 03.02.18.
@@ -43,6 +45,10 @@ public class GameScreen extends ScreenAdapter {
     public void render(float delta) {
         controller.update(delta);
         renderer.render(delta);
+
+        if (GameManager.INSTANCE.isGameOver()) {
+            game.setScreen(new MenuScreen(game));
+        }
     }
 
     @Override

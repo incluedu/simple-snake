@@ -10,6 +10,7 @@ import net.lustenauer.snake.SimpleSnakeGame;
 import net.lustenauer.snake.assets.AssetDescriptors;
 import net.lustenauer.snake.config.GameConfig;
 import net.lustenauer.snake.screen.game.GameScreen;
+import net.lustenauer.snake.screen.menu.MenuScreen;
 import net.lustenauer.snake.util.GdxUtils;
 
 /**
@@ -73,7 +74,7 @@ public class LoadingScreen extends ScreenAdapter {
         draw();
 
         if(changeScreen){
-            game.setScreen(new GameScreen(game));
+            game.setScreen(new MenuScreen(game));
         }
     }
 
