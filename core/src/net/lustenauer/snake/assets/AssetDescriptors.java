@@ -1,6 +1,7 @@
 package net.lustenauer.snake.assets;
 
 import com.badlogic.gdx.assets.AssetDescriptor;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -23,6 +24,12 @@ public class AssetDescriptors {
 
     public static final AssetDescriptor<Skin> UI_SKIN =
             new AssetDescriptor<Skin>(AssetsPaths.UI_SKIN, Skin.class);
+
+    public static final AssetDescriptor<Sound> COIN_SOUND =
+            new AssetDescriptor<Sound>(AssetsPaths.COIN_SOUND, Sound.class);
+
+    public static final AssetDescriptor<Sound> LOSE_SOUND =
+            new AssetDescriptor<Sound>(AssetsPaths.LOSE_SOUND, Sound.class);
 
 
     /*

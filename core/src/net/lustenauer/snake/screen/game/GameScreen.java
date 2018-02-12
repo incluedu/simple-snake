@@ -2,7 +2,10 @@ package net.lustenauer.snake.screen.game;
 
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import net.lustenauer.snake.SimpleSnakeGame;
+import net.lustenauer.snake.assets.AssetDescriptors;
+import net.lustenauer.snake.collision.CollisionListener;
 import net.lustenauer.snake.common.GameManager;
 import net.lustenauer.snake.screen.menu.MenuScreen;
 
@@ -18,9 +21,13 @@ public class GameScreen extends ScreenAdapter {
      */
     private final SimpleSnakeGame game;
     private final AssetManager assetManager;
+    private final CollisionListener listener;
 
     private GameRenderer renderer;
     private GameController controller;
+
+    private Sound coinSound;
+    private Sound loseSound;
 
 
     /*
@@ -29,6 +36,21 @@ public class GameScreen extends ScreenAdapter {
     public GameScreen(SimpleSnakeGame game) {
         this.game = game;
         this.assetManager = game.getAssetManager();
+
+        coinSound = assetManager.get(AssetDescriptors.COIN_SOUND);
+        loseSound = assetManager.get(AssetDescriptors.LOSE_SOUND);
+
+        listener = new CollisionListener() {
+            @Override
+            public void hitCoin() {
+                coinSound.play();
+            }
+
+            @Override
+            public void lose() {
+                loseSound.play();
+            }
+        };
     }
 
     /*
@@ -37,7 +59,7 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void show() {
-        controller = new GameController();
+        controller = new GameController(listener);
         renderer = new GameRenderer(game.getBatch(), assetManager, controller);
     }
 

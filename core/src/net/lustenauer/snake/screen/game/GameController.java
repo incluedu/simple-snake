@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Logger;
+import net.lustenauer.snake.collision.CollisionListener;
 import net.lustenauer.snake.common.GameManager;
 import net.lustenauer.snake.config.GameConfig;
 import net.lustenauer.snake.entity.*;
@@ -25,6 +26,8 @@ public class GameController {
     /*
      * ATTRIBUTES
      */
+    private final CollisionListener listener;
+
     private Snake snake;
     private float timer;
 
@@ -34,7 +37,8 @@ public class GameController {
      * CONSTRUCTORS
      */
 
-    public GameController() {
+    public GameController(CollisionListener listener) {
+        this.listener = listener;
         snake = new Snake();
         coin = new Coin();
 
@@ -136,6 +140,7 @@ public class GameController {
         boolean overlaps = Intersector.overlaps(headBounds, coinBounds);
 
         if (coin.isAvailable() && overlaps) {
+            listener.hitCoin();
             snake.insertBodyPart();
             coin.setAvailable(false);
             GameManager.INSTANCE.incrementScore(GameConfig.COIN_SCORE);
@@ -150,6 +155,7 @@ public class GameController {
 
             Rectangle bodyPartBounds = bodyPart.getBounds();
             if (Intersector.overlaps(headBounds, bodyPartBounds)) {
+                listener.lose();
                 GameManager.INSTANCE.updateHighScore();
                 GameManager.INSTANCE.setGameOver();
             }
@@ -158,10 +164,10 @@ public class GameController {
 
     }
 
-    private void checkForRestart(){
-      if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
-          restart();
-      }
+    private void checkForRestart() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            restart();
+        }
     }
 
     private void restart() {
